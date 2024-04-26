@@ -1,17 +1,21 @@
-from lang_chain import store_get_vectors, ChatOpenAI, run
+from dotenv import load_dotenv
+from fastapi import FastAPI
+# from auth.apis import users_routers
+# from chats.apis import chats_routers
 
-collection_name = "xxxxxx"
-# urls = [
-#     "https://www.mosaicml.com/blog/mpt-7b",
-#     "https://stability.ai/blog/stability-ai-launches-the-first-of-its-stablelm-suite-of-language-models",
-#     "https://lmsys.org/blog/2023-03-30-vicuna/",
-# ]
-# docs = splitter(urls)
-# vector_store = store_get_vectors(docs, collection_name)
+load_dotenv()
+app = FastAPI()
 
-vector_store = store_get_vectors([], collection_name)
-llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.7)
 
-question = "explain How big is stableLM?"
-result = run(question, llm, vector_store, [])
-print(result["answer"])
+# app.include_router(users_routers)
+# app.include_router(chats_routers)
+
+
+@app.get("/")
+def read_root():
+    return "Welcome, this is a simple chat app API"
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
