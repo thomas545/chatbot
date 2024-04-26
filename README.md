@@ -1,4 +1,4 @@
-### Q/A with langchain and OpenAI
+### Chat with your data app
 
 
 ### Features
