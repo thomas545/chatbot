@@ -1,14 +1,16 @@
-import os
 import logging
 import pymongo
 from bson import ObjectId
 from mongoengine import connect
+from core.environment import get_environ
 
 logger = logging.getLogger(__name__)
 
 
 class BaseClient:
     def __init__(self, db_name, host=None, **kwargs) -> None:
+        if host is None:
+            host = get_environ("MONGO_URI")
         self.connetion = connect(db_name, alias=db_name, host=host, **kwargs)
 
 
@@ -35,7 +37,7 @@ class BaseRepositories:
 
 class PyMongoClient:
     def __init__(self, database_name: str, uri: str = ""):
-        self.URI = os.environ.get("MONGO_URI") or uri
+        self.URI = get_environ("MONGO_URI") or uri
         self.client = pymongo.MongoClient(self.URI)
         # self.database = database_name
 
