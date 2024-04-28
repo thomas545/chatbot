@@ -2,11 +2,38 @@ import os
 import logging
 import pymongo
 from bson import ObjectId
+from mongoengine import connect
 
 logger = logging.getLogger(__name__)
 
 
-class MongoClient:
+class BaseClient:
+    def __init__(self, db_name, host=None, **kwargs) -> None:
+        self.connetion = connect(db_name, alias=db_name, host=host, **kwargs)
+
+
+class BaseRepositories:
+
+    def get_list(self):
+        raise NotImplementedError()
+
+    def get_object(self):
+        raise NotImplementedError()
+
+    def create(self):
+        raise NotImplementedError()
+
+    def update(self):
+        raise NotImplementedError()
+
+    def patch(self):
+        raise NotImplementedError()
+
+    def delete(self):
+        raise NotImplementedError()
+
+
+class PyMongoClient:
     def __init__(self, database_name: str, uri: str = ""):
         self.URI = os.environ.get("MONGO_URI") or uri
         self.client = pymongo.MongoClient(self.URI)
@@ -16,10 +43,12 @@ class MongoClient:
 
 
 class MainRepositories:
-    def __init__(self, db_name: str, collection_name: str, client: MongoClient = None):
+    def __init__(
+        self, db_name: str, collection_name: str, client: PyMongoClient = None
+    ):
         self.database = db_name
         self.collection = collection_name
-        self.client = client or MongoClient(db_name)
+        self.client = client or PyMongoClient(db_name)
 
     def insert_one(self, data, **kwargs):
         logger.info("insert_one", data, kwargs)

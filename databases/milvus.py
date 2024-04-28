@@ -97,6 +97,13 @@ class MilvusLangchainMainRepositories:
             "user": self.client.user,
             "password": self.client.password,
         }
+        # self.DEFAULT_MILVUS_CONNECTION = {
+        #     "host": "localhost",
+        #     "port": "19530",
+        #     "user": "",
+        #     "password": "",
+        #     "secure": False,
+        # }
 
     def store_data(
         self,
