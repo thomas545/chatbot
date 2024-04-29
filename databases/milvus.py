@@ -90,12 +90,12 @@ class MilvusMainRepositories:
 
 class MilvusLangchainMainRepositories:
     def __init__(self) -> None:
-        self.client = MilvusClient()
-        self.DB_CONNECTIONS = {
-            "uri": self.client.uri,
-            "port": self.client.port,
-            "user": self.client.user,
-            "password": self.client.password,
+        self.CLIENT = MilvusClient()
+        self.MILVUS_CONNECTION = {
+            "uri": self.CLIENT.uri,
+            "port": self.CLIENT.port,
+            "user": self.CLIENT.user,
+            "password": self.CLIENT.password,
         }
         # self.DEFAULT_MILVUS_CONNECTION = {
         #     "host": "localhost",
@@ -104,6 +104,17 @@ class MilvusLangchainMainRepositories:
         #     "password": "",
         #     "secure": False,
         # }
+
+    def client(self, embeddings: Embeddings, collection_name: str, **kwargs):
+        logger.info("Initialize Client ....")
+        vector_client = Milvus(
+            embeddings,
+            collection_name=collection_name,
+            connection_args=self.MILVUS_CONNECTION,
+            **kwargs,
+        )
+
+        return vector_client
 
     def store_data(
         self,
@@ -118,7 +129,7 @@ class MilvusLangchainMainRepositories:
             docs,
             embeddings,
             collection_name=collection_name,
-            connection_args=self.DB_CONNECTIONS,
+            connection_args=self.MILVUS_CONNECTION,
             **kwargs,
         )
 
@@ -131,7 +142,7 @@ class MilvusLangchainMainRepositories:
         vectors = Milvus(
             embeddings,
             collection_name=collection_name,
-            connection_args=self.DB_CONNECTIONS,
+            connection_args=self.MILVUS_CONNECTION,
             **kwargs,
         )
         return vectors
