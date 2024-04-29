@@ -1,7 +1,7 @@
 import logging
 import pymongo
 from bson import ObjectId
-from mongoengine import connect
+from mongoengine import connect, disconnect
 from core.environment import get_environ
 
 logger = logging.getLogger(__name__)
@@ -9,9 +9,13 @@ logger = logging.getLogger(__name__)
 
 class BaseClient:
     def __init__(self, db_name, host=None, **kwargs) -> None:
+        self.db = db_name
         if host is None:
             host = get_environ("MONGO_URI")
         self.connetion = connect(db_name, alias=db_name, host=host, **kwargs)
+
+    def close_connection(self):
+        return disconnect(self.db)
 
 
 class BaseRepositories:

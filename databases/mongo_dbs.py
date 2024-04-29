@@ -6,4 +6,5 @@ class Databases:
 
 
 class Collections:
-    USERS = "users"
+    RESOURCES = "resources"
+    CONVERSATIONS = "conversations"
