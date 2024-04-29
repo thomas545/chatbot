@@ -11,6 +11,7 @@ class Resource(Document):
 
     user_id = StringField(db_field="user_id", required=True)
     source_url = StringField(db_field="source_url")
+    # TODO source type
     partition_key = StringField(db_field="partition_key")
     partition_name = StringField(db_field="partition_name")
     embedding_method = StringField(db_field="embedding_method", required=True)
