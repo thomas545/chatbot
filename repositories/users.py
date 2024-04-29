@@ -21,11 +21,11 @@ class UserRepositories(BaseRepositories):
         try:
             obj = self.collection.objects.get(**filter_fields)
         except Exception as exc:
-            raise HTTPException(404, "Object Not Found")
+            obj = None
 
-        return obj.to_mongo() if structured else obj
+        return obj.to_mongo() if obj and structured else obj
 
-    def create(self, collection: Document, **data):
-        obj = collection(**data)  # type: ignore
+    def create(self, **data):
+        obj = self.collection(**data)
         obj.save()
         return obj.to_mongo()

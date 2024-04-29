@@ -4,13 +4,13 @@ from bson.errors import InvalidId
 from pydantic import BaseModel, ConfigDict
 
 
-class OID(str):
+class ObjectID(str):
     @classmethod
     def __get_validators__(cls):
         yield cls.validate
 
     @classmethod
-    def validate(cls, v):
+    def validate(cls, v, *args, **kwargs):
         try:
             return ObjectId(str(v))
         except InvalidId:

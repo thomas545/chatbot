@@ -7,6 +7,8 @@ from datetime import datetime, timedelta, timezone
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from core.environment import get_environ
+from schemas.users import UserTokenFields
+
 
 
 SECRET_KEY = get_environ("SECRET_KEY")
@@ -24,14 +26,19 @@ def hash_password(password):
     return pwd_context.hash(password)
 
 
-def create_access_token(data: dict):
-    try:
-        to_encode = data.copy()
-        expire = datetime.now(timezone.utc) + timedelta(days=ACCESS_TOKEN_EXPIRE_DAYS)
-        to_encode.update({"exp": expire})
-        encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)  # type: ignore
-    except Exception:
-        raise HTTPException(403, "Error while creating access token")
+def create_access_token(user):
+    data = {
+        "_id": str(user.get("_id")),
+        "username": user.get("username"),
+        "email": user.get("email"),
+        "is_active": user.get("is_active"),
+    }
+    # try:
+    expire = datetime.now(timezone.utc) + timedelta(days=ACCESS_TOKEN_EXPIRE_DAYS)
+    data.update({"exp": expire})
+    encoded_jwt = jwt.encode(data, SECRET_KEY, algorithm=ALGORITHM)  # type: ignore
+    # except Exception:
+    #     raise HTTPException(403, "Error while creating access token")
     return encoded_jwt
 
 
