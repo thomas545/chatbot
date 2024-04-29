@@ -1,13 +1,11 @@
 from dotenv import load_dotenv
 from fastapi import FastAPI
-from apis.auth import auth
 # from chats.apis import chats_routers
 
 load_dotenv()
 app = FastAPI()
 
 
-app.include_router(auth)
 # app.include_router(chats_routers)
 
 
