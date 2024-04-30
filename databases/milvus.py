@@ -105,18 +105,7 @@ class MilvusLangchainMainRepositories:
         #     "secure": False,
         # }
 
-    def client(self, embeddings: Embeddings, collection_name: str, **kwargs):
-        logger.info("Initialize Client ....")
-        vector_client = Milvus(
-            embeddings,
-            collection_name=collection_name,
-            connection_args=self.MILVUS_CONNECTION,
-            **kwargs,
-        )
-
-        return vector_client
-
-    def store_data(
+    def store_vectors(
         self,
         docs: List[Document],
         collection_name: str,
