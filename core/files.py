@@ -3,6 +3,12 @@ import requests
 import tempfile
 import mimetypes
 from typing import Tuple, Any
+from urllib.parse import quote
+
+
+def get_file_content_type(file_name):
+    content_type, _ = mimetypes.guess_type(file_name)
+    return content_type
 
 
 def get_url_extension(url: str) -> Tuple[Any, Any]:
@@ -38,3 +44,8 @@ def save_url_to_local_file(url: str) -> Tuple[str, str]:
                 tf.write(chunk)
 
     return file_type, local_path
+
+
+def get_s3_file_path(bucket_name, object_path):
+    s3_url = f"https://{bucket_name}.s3.amazonaws.com/"
+    return "{}{}".format(s3_url, quote(object_path))

@@ -1,12 +1,12 @@
 from dotenv import load_dotenv
 from fastapi import FastAPI
-# from chats.apis import chats_routers
+from apis.files import CoreRouters
 
 load_dotenv()
 app = FastAPI()
 
 
-# app.include_router(chats_routers)
+app.include_router(CoreRouters)
 
 
 @app.get("/")
