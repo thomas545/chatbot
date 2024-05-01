@@ -2,7 +2,7 @@ from typing import Annotated
 from fastapi import APIRouter, Header, UploadFile, File, Response
 from core.upload_files import upload_bytes_to_s3
 
-CoreRouters = APIRouter(prefix="/files", tags=["auth"])
+CoreRouters = APIRouter(prefix="/files", tags=["files"])
 
 
 @CoreRouters.post("/upload/")

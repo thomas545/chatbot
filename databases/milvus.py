@@ -12,6 +12,10 @@ from langchain_core.vectorstores import VectorStoreRetriever
 logger = logging.getLogger(__name__)
 
 
+class MilvusCollections:
+    MAIN_COLLECTION = "mainBot"
+
+
 class MilvusClient:
     def __init__(
         self,

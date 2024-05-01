@@ -6,6 +6,7 @@ from langchain.document_loaders import (
     UnstructuredExcelLoader,
 )
 from core.files import save_url_to_local_file, delete_files
+from core.constants import ResourceSources
 
 
 class DocumentProcessor:
@@ -28,11 +29,11 @@ class DocumentProcessor:
         return loader
 
     def run_loader(self, url: Union[str, list]):
-        if self._doc_type == "PDF":
+        if self._doc_type == ResourceSources.PDF.value:
             loader = self.pdf_loader(url)
-        elif self._doc_type == "EXCEL":
+        elif self._doc_type == ResourceSources.EXCEL.value:
             loader = self.excel_loader(url)
-        elif self._doc_type == "URL":
+        elif self._doc_type == ResourceSources.URL.value:
             loader = self.url_loader(url)
         else:
             raise ValueError("Invalid document type.")

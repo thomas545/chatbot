@@ -1,12 +1,14 @@
 from dotenv import load_dotenv
 from fastapi import FastAPI
-from apis.files import CoreRouters
+from apis import files, resources
+
 
 load_dotenv()
 app = FastAPI()
 
 
-app.include_router(CoreRouters)
+app.include_router(files.CoreRouters)
+app.include_router(resources.ResourcesRouters)
 
 
 @app.get("/")

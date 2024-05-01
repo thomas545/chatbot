@@ -1,6 +1,7 @@
 from datetime import datetime
-from mongoengine import Document, StringField, BooleanField, DateTimeField
+from mongoengine import Document, StringField, BooleanField, DateTimeField, EnumField, DictField
 from databases.mongo_dbs import Databases, Collections
+from core.constants import ResourceSources, EmbeddingMethods
 
 
 class Resource(Document):
@@ -10,12 +11,14 @@ class Resource(Document):
     }
 
     user_id = StringField(db_field="user_id", required=True)
-    source_url = StringField(db_field="source_url")
-    # TODO source type
+    source_url = StringField(db_field="source_url", required=True)
+    source = EnumField(db_field="source", enum=ResourceSources, required=True)
     partition_key = StringField(db_field="partition_key")
     partition_name = StringField(db_field="partition_name")
-    embedding_method = StringField(db_field="embedding_method", required=True)
-    user_metadata = StringField(db_field="user_metadata")
+    embedding_method = EnumField(
+        db_field="embedding_method", enum=EmbeddingMethods, required=True
+    )
+    user_metadata = DictField(db_field="user_metadata")
     is_web = BooleanField(default=False)
     crawl_pages = BooleanField(default=False)
     created_at = DateTimeField(db_field="created_at", default=datetime.utcnow)
