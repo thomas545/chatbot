@@ -22,6 +22,7 @@ async def create_resource_api(
     resource = repo.create(**obj_json).to_dict()
     resource["_id"] = str(resource["_id"])
 
+    # TODO add all below processes to BG task
     # load documents
     processor = DocumentProcessor(
         resource.get("source", ""),
