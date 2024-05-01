@@ -26,19 +26,26 @@ async def create_resource_api(
     processor = DocumentProcessor(
         resource.get("source", ""),
         RecursiveCharacterTextSplitter(
-            separators=["\n\n", "\n", " ", ""], chunk_size=4000, chunk_overlap=200
+            separators=["\n\n", "\n", " ", ""], chunk_size=2000, chunk_overlap=200
         ),
     )
     docs = processor.run_loader(resource.get("source_url", ""))
 
     for doc in docs:
-        doc.metadata["user_id"] = user
+        doc.metadata["user_id"] = str(user)
 
-    milvus = MilvusLangchainMainRepositories().store_vectors(
+    milvus = MilvusLangchainMainRepositories()
+    milvus.store_vectors(
         docs,
         MilvusCollections.MAIN_COLLECTION,
         OpenAIEmbeddings(),
-        partition_key_field="user_id",
+        partition_key_field=resource["partition_key"],
+        index_params={
+            "field_name": "vector",
+            "metric_type": "COSINE",
+            "index_type": "IVF_FLAT",
+            "index_name": "vector_index",
+        },
     )
 
     return resource
