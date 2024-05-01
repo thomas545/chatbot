@@ -8,3 +8,4 @@ class Databases:
 class Collections:
     RESOURCES = "resources"
     CONVERSATIONS = "conversations"
+    TICKETS = "tickets"

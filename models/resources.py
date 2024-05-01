@@ -19,7 +19,7 @@ class Resource(Document):
         db_field="embedding_method", enum=EmbeddingMethods, required=True
     )
     user_metadata = DictField(db_field="user_metadata")
-    is_web = BooleanField(default=False)
-    crawl_pages = BooleanField(default=False)
+    is_web = BooleanField(db_field="is_web", default=False)
+    crawl_pages = BooleanField(db_field="crawl_pages", default=False)
     created_at = DateTimeField(db_field="created_at", default=datetime.utcnow)
     updated_at = DateTimeField(db_field="updated_at", default=datetime.utcnow)
