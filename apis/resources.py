@@ -32,8 +32,8 @@ async def create_resource_api(
     )
     docs = processor.run_loader(resource.get("source_url", ""))
 
-    for doc in docs:
-        doc.metadata["user_id"] = str(user)
+    # for doc in docs:
+    #     doc.metadata["user_id"] = str(user)
 
     milvus = MilvusLangchainMainRepositories()
     milvus.store_vectors(
