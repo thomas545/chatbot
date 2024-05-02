@@ -13,6 +13,7 @@ class Resource(Document):
     user_id = StringField(db_field="user_id", required=True)
     source_url = StringField(db_field="source_url", required=True)
     source = EnumField(db_field="source", enum=ResourceSources, required=True)
+    collection_name = StringField(db_field="collection_name")
     partition_key = StringField(db_field="partition_key")
     partition_name = StringField(db_field="partition_name")
     embedding_method = EnumField(

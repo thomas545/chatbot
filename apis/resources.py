@@ -38,9 +38,9 @@ async def create_resource_api(
     milvus = MilvusLangchainMainRepositories()
     milvus.store_vectors(
         docs,
-        MilvusCollections.MAIN_COLLECTION,
+        resource.get("collection_name", ""),
         OpenAIEmbeddings(),
-        partition_key_field=resource["partition_key"],
+        # partition_key_field=resource["partition_key"],
         index_params={
             "field_name": "vector",
             "metric_type": "COSINE",

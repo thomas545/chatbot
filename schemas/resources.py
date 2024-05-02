@@ -8,6 +8,7 @@ class CreateResource(BaseModel):
     # user_id: Optional[str] = None
     source_url: str
     source: str
+    collection_name: str
     partition_key: Optional[str] = "user_id"
     partition_name: Optional[str] = None
     embedding_method: str
@@ -23,6 +24,7 @@ class CreateResourceResponse(MongoModel):
     user_id: Optional[str] = None
     source_url: Optional[str] = None
     source: Optional[str] = None
+    collection_name: Optional[str] = None
     partition_key: Optional[str] = None
     partition_name: Optional[str] = None
     embedding_method: Optional[str] = None
