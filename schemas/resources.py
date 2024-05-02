@@ -8,7 +8,7 @@ class CreateResource(BaseModel):
     # user_id: Optional[str] = None
     source_url: str
     source: str
-    collection_name: str
+    # collection_name: str
     partition_key: Optional[str] = "user_id"
     partition_name: Optional[str] = None
     embedding_method: str

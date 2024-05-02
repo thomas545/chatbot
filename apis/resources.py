@@ -1,3 +1,4 @@
+from uuid import uuid4
 from typing import Annotated
 from fastapi import APIRouter, Header, UploadFile, File, Response
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -17,6 +18,7 @@ async def create_resource_api(
 ):
     obj_json = obj.model_dump()
     obj_json["user_id"] = user
+    obj_json["collection_name"] = f"_{uuid4().hex[:6]}_{user}"
 
     repo = ResourceRepositories()
     resource = repo.create(**obj_json).to_dict()
