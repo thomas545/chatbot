@@ -15,3 +15,8 @@ def get_exists_retrievers(collection_name: str, embeddings: Embeddings, **kwargs
     obj = MilvusLangchainMainRepositories()
     vector_store = obj.get_vectors(collection_name, embeddings, **kwargs)
     return obj.get_retriever(vector_store, search_kwargs={"k": 5})
+
+
+def get_relevant_documents(retriever, query, **kwargs):
+    obj = MilvusLangchainMainRepositories()
+    return obj.get_relevant_documents(retriever, query, **kwargs)

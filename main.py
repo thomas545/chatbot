@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
 from fastapi import FastAPI
-from apis import files, resources
+from apis import files, resources, conversations
 
 
 load_dotenv()
@@ -9,6 +9,7 @@ app = FastAPI()
 
 app.include_router(files.CoreRouters)
 app.include_router(resources.ResourcesRouters)
+app.include_router(conversations.ConvoRouters)
 
 
 @app.get("/")

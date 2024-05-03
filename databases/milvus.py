@@ -153,7 +153,7 @@ class MilvusLangchainMainRepositories:
         return retriever
 
     def get_relevant_documents(
-        self, retriever: VectorStoreRetriever, query: str
+        self, retriever: VectorStoreRetriever, query: str, search_kwargs: dict = {"k": 5}
     ) -> List[Document]:
-        docs = retriever.get_relevant_documents(query)
+        docs = retriever.get_relevant_documents(query, search_kwargs=search_kwargs)
         return docs

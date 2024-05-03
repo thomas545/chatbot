@@ -49,7 +49,7 @@ class Conversation(Document):
     }
 
     user_id = StringField(db_field="user_id", required=True)
-    resource_id = ReferenceField(Resource, db_field="resource_id", required=True)
+    resource_id = ReferenceField(Resource, db_field="resource_id", required=False)
     ticket_id = ReferenceField(Ticket, db_field="ticket_id", required=False)
     query = StringField(db_field="query")
     response = StringField(db_field="response")
