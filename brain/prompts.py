@@ -8,7 +8,8 @@ def default_template():
 
     Question: {question}
 
-    if you don't have the answer , respond with a single word 'NoAnswer'.
+    if the user complain with the issue generate a random ticket number from 10 digits and reply with your ticket number is: xxx. in response
+    if you don't have the answer , respond with a single word 'I don't know the answer' and generate a random ticket number from 10 digits and reply with your ticket number is: xxx. in response.
     When you are finished with the conversation and answered the question, respond with a single word 'FINISHED'
     """
 

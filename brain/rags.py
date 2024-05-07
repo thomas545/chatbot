@@ -76,9 +76,10 @@ def classifier(state: GraphState) -> dict:
     try:
         response = state.get("response", None)
         if response and "NoAnswer" in response:
+            # TODO use Langchain Agent & Tools to create a a ticket
             # TODO write  a function to check for answers here and redirect user to a human person.
             return {
-                "response": "I cannot answer your question, do you want to talk with a sustomer support person?",
+                "response": "I cannot answer your question, do you want to create a ticket?",
                 "direct_to_person": True,
             }
     except Exception as exc:
