@@ -1,6 +1,6 @@
 from typing import Optional, Union
 from langchain.text_splitter import TextSplitter
-from langchain.document_loaders import (
+from langchain_community.document_loaders import (
     UnstructuredURLLoader,
     PyPDFLoader,
     UnstructuredExcelLoader,
