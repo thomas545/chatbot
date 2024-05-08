@@ -1,7 +1,7 @@
 from uuid import uuid4
 from typing import Annotated
 from fastapi import APIRouter, Header, UploadFile, File, Response
-from brain.rags import run_graph_workflow
+from brain.workflow import run_graph_workflow
 from schemas.conversations import StartConversation
 from repositories.conversations import ConversationRepositories, TicketRepositories
 
@@ -22,13 +22,14 @@ async def start_conversation_api(
 
     # Run workflow to get ansert
     response = run_graph_workflow(user, query)
+
     resource = response.get("resource", None)
+    convo_obj.update(response=response, resource_id=resource.get("_id"))
+
     if resource:
         response.pop("resource")
 
-    convo_obj.update(response=response, resource_id=resource.get("_id"))
-
-    final_res = {
+    results = {
         "status": "success",
         "data": {
             "conversation_id": str(convo_obj.get("_id")),
@@ -37,4 +38,4 @@ async def start_conversation_api(
         },
     }
 
-    return {"response": final_res}
+    return {"response": results}

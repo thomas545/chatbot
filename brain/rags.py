@@ -24,6 +24,7 @@ class AgentState(TypedDict):
     user: Optional[str] = None  # type: ignore
     query: Optional[str] = None  # type: ignore
     chat_history: Optional[List] = None  # type: ignore
+    resource: Optional[Any] = None  # type: ignore
     llm: Optional[Any] = None  # type: ignore
     search_tool: Optional[Any] = None  # type: ignore
     agent_out: Union[AgentAction, AgentFinish, None]
@@ -79,7 +80,7 @@ def agent_initializer(state: AgentState):
     agent_out = query_agent_runnable.invoke(state)
 
     print("Agent output ->> ", agent_out)
-    return {"agent_out": agent_out, "search_tool": search_tool, "llm": llm}
+    return {"agent_out": agent_out, "search_tool": search_tool, "llm": llm, "resource": resource}
 
 
 def call_tool(state: AgentState):
@@ -221,67 +222,3 @@ def handle_error(state: list):
     output = final_answer_llm.invoke(prompt)
     function_call = output.additional_kwargs[-1]["tool_calls"]["function"]["arguments"]
     return {"agent_out": function_call}
-
-
-def run_graph_workflow(user, query):
-    """
-    Run the graph workflow of the chatbot and returns a dictionary containing
-    the agent response and the next step in the conversation.
-    - ask question
-    - get docs
-    - send docs to llm and get the response
-    - return response
-    - if user got the complaint or the issue agent will deal with the case and talk to user
-    """
-
-    workflow = StateGraph(AgentState)
-
-    # define workflow nodes
-    workflow.add_node("agent_initializer", agent_initializer)
-    workflow.add_node("call_tool", call_tool)
-
-    workflow.add_node("complaint_tool", resolve_complaint)
-    workflow.add_node("complaint_answer", complaint_answer)
-
-    workflow.add_node("create_ticket_tool", create_ticket)
-    workflow.add_node("ticket_answer", ticket_answer)
-
-    workflow.add_node("workflow_results", workflow_results)
-    workflow.add_node("error", handle_error)
-    workflow.add_node("finish", finish)
-
-    # workflow start point
-    workflow.set_entry_point("agent_initializer")
-
-    workflow.add_conditional_edges(
-        source="agent_initializer",
-        path=continue_next,
-        path_map={
-            "call_tool": "call_tool",
-            "complaint_tool": "complaint_tool",
-            "create_ticket_tool": "create_ticket_tool",
-            "error": "error",
-            "finish": "finish",
-        },
-    )
-
-    # workflow operations and directions
-    workflow.add_edge("call_tool", "workflow_results")
-
-    workflow.add_edge("complaint_tool", "complaint_answer")
-    workflow.add_edge("complaint_answer", "finish")
-
-    workflow.add_edge("create_ticket_tool", "ticket_answer")
-    workflow.add_edge("ticket_answer", "finish")
-
-    workflow.add_edge("workflow_results", "finish")
-    workflow.add_edge("error", "finish")
-
-    workflow.add_edge("finish", END)
-
-    app = workflow.compile()
-    result = app.invoke({"query": query, "user": user})
-    print("\n\nResult:\n===============")
-    print(result)
-    output = json.loads(result.get("agent_out"))
-    return output
