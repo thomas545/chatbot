@@ -1,6 +1,5 @@
-from uuid import uuid4
 from typing import Annotated
-from fastapi import APIRouter, Header, UploadFile, File, Response
+from fastapi import APIRouter, Header
 from brain.workflow import run_graph_workflow
 from schemas.conversations import StartConversation
 from repositories.conversations import ConversationRepositories, TicketRepositories

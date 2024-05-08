@@ -1,16 +1,16 @@
 import json
 import random
-from typing import Dict, TypedDict, Any, Optional, List, Literal, Union, Annotated
+from uuid import uuid4
+from typing import TypedDict, Any, Optional, List, Union, Annotated
 from operator import add as op_add
 from langchain.schema import Document
 from langchain_core.tools import tool
-from langgraph.graph import END, StateGraph
-from langchain_core.output_parsers import StrOutputParser
 from langchain_core.agents import AgentAction, AgentFinish
 from langchain.agents import create_openai_tools_agent
 from langchain.tools.retriever import create_retriever_tool
 from brain.operations import get_user_documents, get_llm
 from brain.prompts import default_template
+from repositories.conversations import TicketRepositories
 
 
 # Post-processing
@@ -32,17 +32,22 @@ class AgentState(TypedDict):
 
 
 @tool("create_ticket_tool", return_direct=True)
-def create_ticket_tool(input: str) -> str:
+def create_ticket_tool(query: str, user: str) -> str:
     """when the user complaint or request to create a ticket or talk to human use this tool to
     Create a ticket and returns the ticket's number when the user want to create a ticket.
     use the ticket numer in this return function
     """
 
-    return f"#{random.randint(100000, 10000000)}"
+    ticket_id = uuid4().hex
+    ticket_repo = TicketRepositories()
+    ticket_repo.create(
+        user_id=user, ticket_ref=ticket_id, subject=query, created_by=user
+    )
+    return f"#{ticket_id}"
 
 
 @tool("complaint_tool", return_direct=True)
-def complaint_tool(input: str) -> str:
+def complaint_tool(query: str) -> str:
     """In case user is angry or comlaining, try to find the answer for the complaint in the context"""
     return ""
 
@@ -77,10 +82,17 @@ def agent_initializer(state: AgentState):
     query_agent_runnable = create_openai_tools_agent(
         llm=llm, tools=tools, prompt=prompt
     )
+    # agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
+
     agent_out = query_agent_runnable.invoke(state)
 
     print("Agent output ->> ", agent_out)
-    return {"agent_out": agent_out, "search_tool": search_tool, "llm": llm, "resource": resource}
+    return {
+        "agent_out": agent_out,
+        "search_tool": search_tool,
+        "llm": llm,
+        "resource": resource,
+    }
 
 
 def call_tool(state: AgentState):
@@ -127,7 +139,9 @@ def create_ticket(state: list):
     print("Run create ticket ->> ")
     action = state["agent_out"]
     tool_call = action[-1].message_log[-1].additional_kwargs["tool_calls"][-1]
-    output = create_ticket_tool.invoke(json.loads(tool_call["function"]["arguments"]))
+    arguments = json.loads(tool_call["function"]["arguments"])
+    arguments.update({"user": state["user"]})
+    output = create_ticket_tool.invoke(arguments)
     return {"intermediate_steps": [{"ticket": str(output)}]}
 
 
