@@ -10,7 +10,7 @@ def get_llm():
     llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0)
     return llm
 
-def get_user_documents(user_id, query):
+def get_user_documents(user_id, query, get_docs=True):
     """Get documents that are relevant to the user's query"""
     repo_obj = ResourceRepositories()
     resource = repo_obj.get_object(user_id=user_id)
@@ -30,8 +30,8 @@ def get_user_documents(user_id, query):
         return []
     
     # Get document ids for all available retrievers
-    docs = get_relevant_documents(retrievers, query)
-    return docs, resource
+    docs = get_relevant_documents(retrievers, query) if get_docs else None
+    return retrievers, docs, resource
 
 
 
