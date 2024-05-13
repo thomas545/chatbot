@@ -1,6 +1,4 @@
 import json
-import random
-from uuid import uuid4
 from typing import TypedDict, Any, Optional, List, Union, Annotated
 from operator import add as op_add
 from langchain.schema import Document
@@ -8,6 +6,7 @@ from langchain_core.tools import tool
 from langchain_core.agents import AgentAction, AgentFinish
 from langchain.agents import create_openai_tools_agent
 from langchain.tools.retriever import create_retriever_tool
+from core.utils import get_random_string
 from brain.operations import get_user_documents, get_llm
 from brain.prompts import default_template
 from repositories.conversations import TicketRepositories
@@ -38,7 +37,7 @@ def create_ticket_tool(query: str, user: str) -> str:
     use the ticket numer in this return function
     """
 
-    ticket_id = uuid4().hex
+    ticket_id = get_random_string(10)
     ticket_repo = TicketRepositories()
     ticket_repo.create(
         user_id=user, ticket_ref=ticket_id, subject=query, created_by=user
